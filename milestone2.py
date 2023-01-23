@@ -64,7 +64,7 @@ resInd=[]
 
 for i in range(len(searchPolygonCoor)):
     searchArea,searchPeri=find_area_perim(searchPolygonCoor[i])
-    if searchArea==templateArea and searchPeri==templatePeri:
+    if searchArea==templateArea and searchPeri==templatePeri and len(searchPolygonCoor[i])==len(templatePolygonCoor):
         resInd.append(i)
 #print(resInd)
 
