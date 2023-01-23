@@ -1,3 +1,4 @@
+import math
 def find_area_perim(array):
     a = 0
     p = 0
@@ -47,13 +48,15 @@ for poly in searchPolygonCoorstr:
         temp.append([int(poly[i]),int(poly[i+1])])
     searchPolygonCoor.append(temp)
 
-
+searchPolygonDist=[[math.dist(searchPolygonCoor[j][i],searchPolygonCoor[j][i+1]) for i in range (len(searchPolygonCoor[j])-1)] for j in range(len(searchPolygonCoor))]
 
 
 templatePolygons=partition1[2].split("endel")
 templatePolygons[0]='\nboundary'+templatePolygons[0]
 templatePolygonCoorstr=[templatePolygons[i].split()[7:] for i in range(len(templatePolygons))]
 templatePolygonCoor=[]
+
+
 
 searchPolygonVertices=[int(searchPolygons[i].split()[6]) for i in range(len(searchPolygons)-1)]
 templatedPolygonVertices=[int(templatePolygons[i].split()[6]) for i in range(len(templatePolygons)-1)]
@@ -70,6 +73,29 @@ for poly in templatePolygonCoorstr:
     templatePolygonCoor.append(temp)
 templatePolygonCoor=templatePolygonCoor[:-1]
 
+templatedist=[[math.dist(templatePolygonCoor[j][i],templatePolygonCoor[j][i+1]) for i in range (len(templatePolygonCoor[j])-1)] for j in range(len(templatePolygonCoor))]
+ratio=[]
+
+for i in range(len(templatedist)):
+   for j in range(len(searchPolygonDist)):
+       if len(templatedist[i])==len(searchPolygonDist[j]):
+           ratio.append([templatedist[i][k]/searchPolygonDist[j][k] for k in range(len(templatedist[i]))])
+       else:
+           ratio.append(0)
+perfectRatioInd=[]
+
+for i in range(len(ratio)):
+    ini=ratio[i][0]
+    flag=1
+    for j in range(1,len(ratio[i])):
+        if ratio[i][j]!=ini:
+            flag=0
+    if flag:
+        perfectRatioInd.append(i)
+print(len(perfectRatioInd))
+
+
+
 expected=[]
 for i in templatePolygonCoor:
     templateArea,templatePeri=find_area_perim(i)
@@ -78,22 +104,24 @@ for i in templatePolygonCoor:
 
 writeText=""
 writeText+=header
-resInd=[]
-print(expected)
 
-c=0
+'''
+resInd=[]
+
 for i in range(len(searchPolygonCoor)):
     searchArea,searchPeri=find_area_perim(searchPolygonCoor[i])
 
     if [searchArea,searchPeri] in expected:
         ind=expected.index([searchArea,searchPeri])
         if templatedPolygonVertices[ind]==searchPolygonVertices[i] and templatePolygonLayer[ind]==searchPolygonLayer[i]:
-            c+=1
+
             resInd.append(i)
-print(c)
+'''
+
+
 #print(resInd)
 
-for i in resInd:
+for i in perfectRatioInd:
     writeText+=searchPolygons[i]+'endel'
 
 #writing the header
